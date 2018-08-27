@@ -1,0 +1,4 @@
+
+//Babel plugin used for code splitting react/vue
+
+npm install babel-plugin-syntax-dynamic-import --save-dev
