@@ -5,3 +5,33 @@
 */
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
+
+/*
+|------------------------------------------------------------------------------------------
+|     Save Images from a WYSIWYG (text editor) text content
+|------------------------------------------------------------------------------------------
+*/
+function upload_images_from_html_content($text_content, $dir_path){
+
+        $dom = new \DomDocument('1.0', 'UTF-8');
+        $content = $text_content;
+        libxml_use_internal_errors(true);
+        $dom->loadHtml($content);
+        $images = $dom->getElementsByTagName('img');
+        foreach ($images as $k => $img) {
+            $data = $img->getAttribute('src');
+            if (strpos($data, $dir_path) !== false) continue; //break if already saved
+            $extension = explode('/', mime_content_type($data))[1];
+            @list($type, $file_data) = explode(';', $data);
+            @list(, $file_data) = explode(',', $file_data);
+            $imageName = str_random(10).'.'.$extension;
+            $file_path = public_path().$dir_path. $imageName;
+            $img_url = $dir_path . $imageName;
+            File::put($file_path, base64_decode($file_data));
+            $img->removeAttribute('src');
+            $img->setAttribute('src', $img_url);
+            unset($data);
+        }
+
+        return utf8_decode($dom->saveHTML());
+    }
