@@ -1,0 +1,17 @@
+BASE64 ENCODING/DECODING WINDOWS
+
+To decode a base64 encoded string saved in a file on Windows, you can use PowerShell.
+
+$base64String = Get-Content -Path "file.txt"
+$decodedString = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64String))
+$decodedString | Out-File -FilePath "decoded.txt"
+
+Replace "file.txt" with the path to your base64 encoded file. This command reads the contents of the file, decodes the base64 string, and saves the decoded string to a new file named "decoded.txt".
+
+------------------------------------------------------------
+
+If you want to encode the content of an existing file, you can read the content of the file, encode it to base64, and then save it to a new file, similar to the decoding process:
+
+$content = Get-Content -Path "decoded.txt" -Raw
+$base64String = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
+$base64String | Out-File -FilePath "encoded.txt"
